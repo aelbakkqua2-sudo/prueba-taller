@@ -217,6 +217,7 @@
         </select>
       </div>
       <div class="form-group"><label>Mensaje</label><textarea id="f-msg" placeholder="Cuéntanos qué le pasa a tu vehículo..."></textarea></div>
+      <div class="h-captcha" data-captcha="true" style="margin-bottom:1rem"></div>
       <button class="form-submit" id="form-btn">Enviar mensaje</button>
       <div class="success-msg" id="form-success">&#10003; Mensaje enviado. Te contactaremos pronto.</div>
     </div>
@@ -363,5 +364,6 @@ document.getElementById('form-btn').onclick=async()=>{
 
 renderCal();
 </script>
+<script src="https://web3forms.com/client/script.js" async defer></script>
 </body>
 </html>
