@@ -317,15 +317,48 @@ document.getElementById('confirm-btn').onclick=()=>{
   selSlot=null;selDay=null;renderCal();document.getElementById('slots-grid').innerHTML='';
 };
 
-document.getElementById('form-btn').onclick=()=>{
-  const n=document.getElementById('f-nombre').value;
-  const t=document.getElementById('f-tel').value;
-  const e=document.getElementById('f-email').value;
+document.getElementById('form-btn').onclick=async()=>{
+  const n=document.getElementById('f-nombre').value.trim();
+  const t=document.getElementById('f-tel').value.trim();
+  const e=document.getElementById('f-email').value.trim();
+  const tipo=document.getElementById('f-tipo').value;
+  const msg=document.getElementById('f-msg').value.trim();
   const s=document.getElementById('form-success');
-  if(!n||!t||!e){s.style.display='block';s.style.background='#FAECE7';s.style.borderColor='#F5C4B3';s.style.color='#993C1D';s.textContent='Por favor, rellena nombre, teléfono y email.';return;}
-  s.style.display='block';s.style.background='#eaf3de';s.style.borderColor='#c0dd97';s.style.color='#3B6D11';s.textContent='✓ Mensaje enviado. Te contactaremos pronto.';
-  ['f-nombre','f-tel','f-email','f-msg'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-tipo').selectedIndex=0;
+  if(!n||!t||!e){
+    s.style.display='block';s.style.background='#FAECE7';s.style.borderColor='#F5C4B3';s.style.color='#993C1D';
+    s.textContent='Por favor, rellena nombre, teléfono y email.';return;
+  }
+  const btn=document.getElementById('form-btn');
+  btn.textContent='Enviando...';btn.disabled=true;
+  try{
+    const res=await fetch('https://api.web3forms.com/submit',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({
+        access_key:'85adb596-1435-465d-afaa-d301d9e65b05',
+        subject:'Nuevo contacto desde Taller Rueda',
+        name:n,
+        phone:t,
+        email:e,
+        tipo:tipo||'No especificado',
+        message:msg||'Sin mensaje'
+      })
+    });
+    const data=await res.json();
+    if(data.success){
+      s.style.display='block';s.style.background='#eaf3de';s.style.borderColor='#c0dd97';s.style.color='#3B6D11';
+      s.textContent='✓ Mensaje enviado. Te contactaremos pronto.';
+      ['f-nombre','f-tel','f-email','f-msg'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('f-tipo').selectedIndex=0;
+    } else {
+      s.style.display='block';s.style.background='#FAECE7';s.style.borderColor='#F5C4B3';s.style.color='#993C1D';
+      s.textContent='Error al enviar. Inténtalo de nuevo.';
+    }
+  } catch(err){
+    s.style.display='block';s.style.background='#FAECE7';s.style.borderColor='#F5C4B3';s.style.color='#993C1D';
+    s.textContent='Error de conexión. Inténtalo de nuevo.';
+  }
+  btn.textContent='Enviar mensaje';btn.disabled=false;
 };
 
 renderCal();
