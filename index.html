@@ -342,7 +342,8 @@ document.getElementById('form-btn').onclick=async()=>{
         phone:t,
         email:e,
         tipo:tipo||'No especificado',
-        message:msg||'Sin mensaje'
+        message:msg||'Sin mensaje',
+        'h-captcha-response': document.querySelector('textarea[name="h-captcha-response"]')?.value||''
       })
     });
     const data=await res.json();
